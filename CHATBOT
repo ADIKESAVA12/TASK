@@ -1,0 +1,71 @@
+# Import necessary libraries
+import nltk
+import random
+import string
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, LSTM, Dense
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+# Data Collection
+# Sample dataset of conversations
+conversations = [
+    ("Hi", "Hello! How can I help you?"),
+    ("What's the weather like today?", "I'm sorry, I don't have real-time weather information."),
+    ("Tell me a joke", "Sure, here's one: Why don't scientists trust atoms? Because they make up everything!"),
+    # Add more sample conversations
+]
+
+# Text Preprocessing
+def preprocess_text(text):
+    # Tokenize, remove stopwords and punctuation
+    tokens = word_tokenize(text)
+    tokens = [word.lower() for word in tokens if word.isalpha()]
+    tokens = [word for word in tokens if word not in stopwords.words('english')]
+    return ' '.join(tokens)
+
+# Preprocess the conversations
+preprocessed_conversations = [(preprocess_text(question), preprocess_text(answer)) for question, answer in conversations]
+
+# Intent Recognition
+def get_intent(user_input):
+    # Simple keyword matching for demonstration purposes
+    if 'weather' in user_input:
+        return 'weather_intent'
+    elif 'joke' in user_input:
+        return 'joke_intent'
+    else:
+        return 'general_intent'
+
+# Response Generation
+# Implementing a basic rule-based response generation for demonstration
+def generate_response(intent):
+    if intent == 'weather_intent':
+        return "I'm sorry, I don't have real-time weather information."
+    elif intent == 'joke_intent':
+        return "Sure, here's one: Why don't scientists trust atoms? Because they make up everything!"
+    else:
+        return "Hello! How can I help you?"
+
+# User Interaction
+def chat():
+    print("Chatbot: Hello! How can I help you?")
+    while True:
+        user_input = input("User: ")
+        if user_input.lower() == 'exit':
+            print("Chatbot: Goodbye!")
+            break
+        user_intent = get_intent(user_input)
+        response = generate_response(user_intent)
+        print(f"Chatbot: {response}")
+
+# Learning and Improvement
+# In a real-world scenario, you would integrate mechanisms for learning and improvement here.
+
+# Run the chat
+chat()
